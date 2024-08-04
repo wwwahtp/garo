@@ -1,0 +1,21 @@
+@import 'reset.css';
+
+.popup_body {
+  display: flex;
+  flex-direction: column;
+  min-height: 15rem;
+  min-width: 25rem;
+  background-color: grey;
+  justify-content: center;
+  align-items: center;
+  border-radius: 1rem;
+}
+#button_onOff {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 5rem;
+  width: 5rem;
+  background-color: darkgray;
+  border-radius: 1rem;
+}
