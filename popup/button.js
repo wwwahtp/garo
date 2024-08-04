@@ -11,7 +11,7 @@ document.getElementById('button_onOff').addEventListener('click', () => {
           if (chrome.runtime.lastError) {
             alert(chrome.runtime.lastError.message);
           } else {
-            alert('button1 성공');
+            alert('적용되었습니다');
           }
         }
       );
@@ -26,7 +26,6 @@ document.getElementById('button_onOff').addEventListener('click', () => {
           if (chrome.runtime.lastError) {
             alert(chrome.runtime.lastError.message);
           } else {
-            alert('button2 성공');
           }
         }
       );

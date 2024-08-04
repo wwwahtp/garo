@@ -8,11 +8,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-all_nodes = [];
+let all_nodes = [];
 
 function traverse(el_node) {
   el_node.childNodes.forEach((item) => {
-    if (item.nodeType == 3 && item.textContent.length != 0) {
+    if (item.nodeType == 3 && item.textContent.trim().length !== 0) {
       all_nodes.push(item);
     } else {
       traverse(item);
@@ -21,52 +21,51 @@ function traverse(el_node) {
 }
 
 function runit() {
-  const selection = window.getSelection();
-
   traverse(document.body);
 
   all_nodes.forEach((textNode) => {
-    if (textNode.textContent.length > 0) {
-      const words = textNode.textContent.split(' ');
-      const parent = textNode.parentNode;
-      const parent_attribute = parent.getAttribute('class');
+    const parent = textNode.parentNode;
+    const originalText = textNode.textContent;
+    const words = originalText.split(/\s+/);
 
-      const fragment = document.createDocumentFragment();
+    const fragment = document.createDocumentFragment();
 
-      words.forEach((word, index) => {
-        const span = document.createElement('span');
+    words.forEach((word, index) => {
+      if (word.trim().length > 0) {
+        const firstHalfWord = word.slice(0, Math.ceil(word.length / 2));
+        const secondHalfWord = word.slice(Math.ceil(word.length / 2));
 
-        if (word.length > 1 && word != ' ') {
-          const firstHalfWord = word.slice(0, Math.ceil(word.length / 2));
-          span.style.fontWeight = 'bold';
-          span.style.color = 'red';
+        const span2 = document.createElement('span');
+        const span1 = document.createElement('span');
+        span1.style.fontWeight = 'bold';
+        //span1.style.color = 'red';
+        span1.textContent = firstHalfWord;
 
-          span.textContent = firstHalfWord;
-          span.setAttribute('class', parent_attribute);
-          fragment.appendChild(span);
+        span2.style.fontWeight = 'lighter';
+        span2.textContent = secondHalfWord;
 
-          const remainText = document.createTextNode(
-            word.slice(Math.ceil(word.length / 2))
-          );
-          fragment.appendChild(remainText);
-        } else if (word.length == 1) {
-          span.style.fontWeight = 'bold';
-          span.style.color = 'red';
+        const textNode2 = document.createTextNode(secondHalfWord);
 
-          span.textContent = word;
-          span.setAttribute('class', parent_attribute);
-          fragment.appendChild(span);
+        if (parent.nodeName !== 'SPAN') {
+          fragment.appendChild(span1);
+          fragment.appendChild(span2);
+        } else {
+          fragment.appendChild(document.createTextNode(firstHalfWord));
+          fragment.appendChild(textNode2);
         }
 
         if (index < words.length - 1) {
           fragment.appendChild(document.createTextNode(' '));
         }
-      });
+      } else {
+        fragment.appendChild(document.createTextNode(' '));
+      }
+    });
 
-      parent.replaceChild(fragment, textNode);
-    }
+    parent.replaceChild(fragment, textNode);
   });
 }
+
 function stopit() {
-  document.body.innerText = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
+  location.href = location.href;
 }
